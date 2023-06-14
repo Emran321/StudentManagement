@@ -1,0 +1,68 @@
+create database StudentDB
+
+use StudentDB
+create Table dbo.Students 
+(
+StudentId int not null Identity(1,1) constraint StudentId primary key,
+StudentName nvarchar(150),
+EmailAddress nvarchar(150),
+city nvarchar(150),
+CreationDate datetime,
+CreateBy int
+)
+
+
+create proc dbo.GetStudentList
+as
+begin
+select * from Students
+end
+
+
+create proc dbo.InsertStudent
+(
+@StudentName nvarchar(150),
+@EmailAddress nvarchar(150),
+@city nvarchar(150),
+@CreateBy int
+)
+as
+begin try
+ insert into Students(StudentName,EmailAddress,city,CreationDate,CreateBy)
+ values(@StudentName,@EmailAddress,@city,getdate(),@CreateBy)
+ select 'Save Successfully' as Response
+ end try
+ begin catch
+  select ERROR_MESSAGE() as Response 
+end catch
+
+
+
+create proc dbo.DeleteStudent(
+@StudentId int
+)
+ as 
+ begin try
+  delete from Students where StudentId = @StudentId 
+  select 'Delete Successfully' as Response
+  end try
+  begin catch
+   select ERROR_MESSAGE() as Response
+   end catch
+
+
+ create proc dbo.SupdateStudent
+(
+@StudentName nvarchar(150),
+@EmailAddress nvarchar(150),
+@city nvarchar(150),
+@CreateBy int,
+@StudentId int
+)
+as 
+begin try
+ update Students set StudentName = @StudentName, EmailAddress = @EmailAddress, city = @city,CreateBy = @CreateBy where StudentId = @StudentId
+end try
+begin catch
+  select ERROR_MESSAGE() as Response
+end catch
